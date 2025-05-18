@@ -6,17 +6,21 @@ class CreditTransaction(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    amount = db.Column(db.Integer, nullable=False)  # Positive for credits added, negative for credits spent
-    transaction_type = db.Column(db.String(50), nullable=False)  # 'upload', 'view', 'gift_sent', 'gift_received', 'initial'
-    description = db.Column(db.String(200), nullable=False)
-    related_user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)  # For gift transactions
-    note_id = db.Column(db.Integer, db.ForeignKey('notes.id'), nullable=True)  # For upload/view transactions
+    amount = db.Column(db.Integer, nullable=False)  # Can be positive (earning) or negative (spending)
+    transaction_type = db.Column(db.String(50), nullable=False)  # 'upload', 'download', 'initial', 'purchase', 'gift_sent', 'gift_received'
+    description = db.Column(db.String(200))
+    payment_id = db.Column(db.String(100))  # Payment gateway transaction ID
+    payment_amount = db.Column(db.Float)    # Amount paid in rupees
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    # Foreign keys for related entities
+    related_user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    note_id = db.Column(db.Integer, db.ForeignKey('notes.id'))
 
     # Relationships
-    user = db.relationship('User', foreign_keys=[user_id], backref=db.backref('credit_transactions', lazy='dynamic'))
+    user = db.relationship('User', foreign_keys=[user_id], backref='credit_transactions')
     related_user = db.relationship('User', foreign_keys=[related_user_id])
     note = db.relationship('Note', backref='credit_transactions')
 
     def __repr__(self):
-        return f'<CreditTransaction {self.id}: {self.transaction_type} {self.amount}>' 
+        return f'<CreditTransaction {self.id}: {self.transaction_type}>' 

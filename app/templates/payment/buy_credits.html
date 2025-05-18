@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="text-center">Buy Credits</h3>
+                </div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <label for="credits" class="form-label">Number of Credits</label>
+                        <input type="number" class="form-control" id="credits" min="1" value="1">
+                        <small class="text-muted">1 Credit = ₹10</small>
+                    </div>
+                    
+                    <h6 class="mt-4">Customer Details</h6>
+                    <div class="form-group">
+                        <label for="customer-email">VIT Email Address</label>
+                        <input type="email" id="customer-email" class="form-control" required>
+                        <small class="text-muted">Enter the VIT email address for payment receipt</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="customer-name">Full Name</label>
+                        <input type="text" id="customer-name" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="address-line1">Address Line 1</label>
+                        <input type="text" id="address-line1" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="city">City</label>
+                        <input type="text" id="city" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="state">State</label>
+                        <input type="text" id="state" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="postal-code">Postal Code</label>
+                        <input type="text" id="postal-code" class="form-control" required>
+                    </div>
+
+                    <!-- Card Payment Section -->
+                    <div id="cardPaymentSection" class="payment-section">
+                        <div class="mb-4">
+                            <label for="card-element" class="form-label">Credit or Debit Card</label>
+                            <div id="card-element" class="form-control"></div>
+                            <div id="card-errors" class="text-danger mt-2" role="alert"></div>
+                        </div>
+                    </div>
+                    
+                    <button id="submit-payment" class="btn btn-primary w-100">
+                        Pay Now
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const stripe = Stripe('{{ stripe_publishable_key }}');
+    const elements = stripe.elements();
+    const card = elements.create('card');
+    card.mount('#card-element');
+
+    const creditsInput = document.getElementById('credits');
+    const submitButton = document.getElementById('submit-payment');
+    const cardErrors = document.getElementById('card-errors');
+
+    card.addEventListener('change', function(event) {
+        if (event.error) {
+            cardErrors.textContent = event.error.message;
+        } else {
+            cardErrors.textContent = '';
+        }
+    });
+
+    submitButton.addEventListener('click', async function(e) {
+        e.preventDefault();
+        submitButton.disabled = true;
+        submitButton.textContent = 'Processing...';
+
+        try {
+            // Create payment intent
+            const response = await fetch('/payment/create-payment-intent', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    credits: parseInt(creditsInput.value),
+                    email: document.getElementById('customer-email').value,
+                    name: document.getElementById('customer-name').value,
+                    address_line1: document.getElementById('address-line1').value,
+                    city: document.getElementById('city').value,
+                    state: document.getElementById('state').value,
+                    postal_code: document.getElementById('postal-code').value,
+                    payment_method: 'card' // Only card payments now
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.error) {
+                throw new Error(data.error);
+            }
+
+            // Handle card payment
+            const result = await stripe.confirmCardPayment(data.clientSecret, {
+                payment_method: {
+                    card: card,
+                }
+            });
+
+            if (result.error) {
+                throw new Error(result.error.message);
+            }
+            
+            // Redirect to success page for card payment
+            window.location.href = '/payment/payment-success?payment_intent_id=' + data.payment_intent_id;
+
+        } catch (error) {
+            cardErrors.textContent = error.message;
+            submitButton.disabled = false;
+            submitButton.textContent = 'Pay Now';
+        }
+    });
+});
+</script>
+{% endblock %} 

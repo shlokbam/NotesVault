@@ -17,4 +17,7 @@ WTForms>=3.2.1
 dnspython>=2.0.0
 idna>=2.0.0
 typing-extensions>=4.6.0
-alembic==1.13.1 
+alembic==1.13.1
+stripe==7.11.0
+qrcode==7.4.2
+gunicorn 

@@ -7,6 +7,8 @@ from app.models.note_view import NoteView
 from werkzeug.security import generate_password_hash
 import re
 from app.models.credit_transaction import CreditTransaction
+from datetime import datetime
+from flask import current_app
 
 bp = Blueprint('auth', __name__)
 
@@ -30,6 +32,7 @@ def register():
             flash('Only VIT email addresses are allowed for registration.', 'error')
             return render_template('auth/register.html')
 
+        # Check if email is already registered
         if User.query.filter_by(email=email).first():
             flash('Email already registered.', 'error')
             return render_template('auth/register.html')
@@ -133,22 +136,10 @@ def login():
 
         user = User.query.filter_by(email=email).first()
         
-        # First check if user exists and password is correct
+        # Check if user exists and password is correct
         if not user or not user.check_password(password):
             flash('Invalid email or password.', 'error')
             return render_template('auth/login.html')
-        
-        # Then check if email is verified
-        if not user.is_verified:
-            # Only send a new verification code if the user has not received one before
-            if not user.verification_code:
-                user.generate_verification_code()
-                from app.utils.email import send_verification_email
-                send_verification_email(user)
-                flash('Please verify your email first. A verification code has been sent to your email.', 'warning')
-            else:
-                flash('Please verify your email first. Check your email for the verification code.', 'warning')
-            return redirect(url_for('auth.verify_email'))
         
         # If everything is okay, log in the user
         login_user(user, remember=remember)
@@ -206,7 +197,7 @@ def edit_profile():
 @bp.route('/credit-history')
 @login_required
 def credit_history():
-    transactions = current_user.credit_transactions.order_by(CreditTransaction.created_at.desc()).all()
+    transactions = CreditTransaction.query.filter_by(user_id=current_user.id).order_by(CreditTransaction.created_at.desc()).all()
     return render_template('auth/credit_history.html', transactions=transactions)
 
 @bp.route('/gift-credits', methods=['GET', 'POST'])
@@ -254,4 +245,9 @@ def gift_credits():
         flash(f'Successfully gifted {credit_amount} credits to {recipient_email}!', 'success')
         return redirect(url_for('main.index'))
     
-    return render_template('auth/gift_credits.html') 
+    return render_template('auth/gift_credits.html')
+
+@bp.route('/buy-credits', methods=['GET', 'POST'])
+@login_required
+def buy_credits():
+    return redirect(url_for('payment.buy_credits'))

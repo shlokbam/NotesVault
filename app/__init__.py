@@ -46,10 +46,11 @@ def create_app(config_class=Config):
     from app.models.credit_transaction import CreditTransaction
 
     # Register blueprints
-    from app.routes import main, auth, notes
+    from app.routes import main, auth, notes, payment
     app.register_blueprint(main.bp)
     app.register_blueprint(auth.bp)
     app.register_blueprint(notes.bp)
+    app.register_blueprint(payment.bp)
 
     with app.app_context():
         db.create_all()
