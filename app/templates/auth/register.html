@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Register - NotesVault{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">Register</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Full Name</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">College Email</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                        <div class="form-text">Please use your college email address.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="college" class="form-label">College/University</label>
+                        <input type="text" class="form-control" id="college" name="college" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="department" class="form-label">Department</label>
+                        <select class="form-select" id="department" name="department" required>
+                            <option value="">Select Department</option>
+                            <option value="Chemical Engineering">Chemical Engineering</option>
+                            <option value="Computer Engineering">Computer Engineering</option>
+                            <option value="Civil Engineering">Civil Engineering</option>
+                            <option value="Computer Sciences & Engineering (AI)">Computer Sciences & Engineering (AI)</option>
+                            <option value="Computer Sciences and Engineering (AI & ML)">Computer Sciences and Engineering (AI & ML)</option>
+                            <option value="Computer Science and Engineering (Data Science)">Computer Science and Engineering (Data Science)</option>
+                            <option value="Computer Science (IoT and Cyber Security Including Blockchain Technology)">Computer Science (IoT and Cyber Security Including Blockchain Technology)</option>
+                            <option value="Computer Engineering (Software Engineering)">Computer Engineering (Software Engineering)</option>
+                            <option value="Electronics and Telecommunication Engineering">Electronics and Telecommunication Engineering</option>
+                            <option value="Engineering, Science & Humanities">Engineering, Science & Humanities</option>
+                            <option value="Information Technology">Information Technology</option>
+                            <option value="Instrumentation Engineering">Instrumentation Engineering</option>
+                            <option value="Mechanical Engineering">Mechanical Engineering</option>
+                            <option value="Multidisciplinary Engineering">Multidisciplinary Engineering</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Register</button>
+                </form>
+            </div>
+            <div class="card-footer text-center">
+                <p class="mb-0">Already have an account? <a href="{{ url_for('auth.login') }}">Login here</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

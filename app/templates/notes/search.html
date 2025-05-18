@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}Search Notes - NotesVault{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Filters</h5>
+            </div>
+            <div class="card-body">
+                <form method="GET" action="{{ url_for('notes.search') }}">
+                    <div class="mb-3">
+                        <label for="q" class="form-label">Search</label>
+                        <input type="text" class="form-control" id="q" name="q" value="{{ request.args.get('q', '') }}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="semester" class="form-label">Semester</label>
+                        <select class="form-select" id="semester" name="semester">
+                            <option value="">All Semesters</option>
+                            {% for i in range(1, 9) %}
+                            <option value="{{ i }}" {% if request.args.get('semester')|int == i %}selected{% endif %}>
+                                Semester {{ i }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="department" class="form-label">Department</label>
+                        <select class="form-select" id="department" name="department">
+                            <option value="">All Departments</option>
+                            <option value="Chemical Engineering" {% if request.args.get('department') == 'Chemical Engineering' %}selected{% endif %}>Chemical Engineering</option>
+                            <option value="Computer Engineering" {% if request.args.get('department') == 'Computer Engineering' %}selected{% endif %}>Computer Engineering</option>
+                            <option value="Civil Engineering" {% if request.args.get('department') == 'Civil Engineering' %}selected{% endif %}>Civil Engineering</option>
+                            <option value="Computer Sciences & Engineering (AI)" {% if request.args.get('department') == 'Computer Sciences & Engineering (AI)' %}selected{% endif %}>Computer Sciences & Engineering (AI)</option>
+                            <option value="Computer Sciences and Engineering (AI & ML)" {% if request.args.get('department') == 'Computer Sciences and Engineering (AI & ML)' %}selected{% endif %}>Computer Sciences and Engineering (AI & ML)</option>
+                            <option value="Computer Science and Engineering (Data Science)" {% if request.args.get('department') == 'Computer Science and Engineering (Data Science)' %}selected{% endif %}>Computer Science and Engineering (Data Science)</option>
+                            <option value="Computer Science (IoT and Cyber Security Including Blockchain Technology)" {% if request.args.get('department') == 'Computer Science (IoT and Cyber Security Including Blockchain Technology)' %}selected{% endif %}>Computer Science (IoT and Cyber Security Including Blockchain Technology)</option>
+                            <option value="Computer Engineering (Software Engineering)" {% if request.args.get('department') == 'Computer Engineering (Software Engineering)' %}selected{% endif %}>Computer Engineering (Software Engineering)</option>
+                            <option value="Electronics and Telecommunication Engineering" {% if request.args.get('department') == 'Electronics and Telecommunication Engineering' %}selected{% endif %}>Electronics and Telecommunication Engineering</option>
+                            <option value="Engineering, Science & Humanities" {% if request.args.get('department') == 'Engineering, Science & Humanities' %}selected{% endif %}>Engineering, Science & Humanities</option>
+                            <option value="Information Technology" {% if request.args.get('department') == 'Information Technology' %}selected{% endif %}>Information Technology</option>
+                            <option value="Instrumentation Engineering" {% if request.args.get('department') == 'Instrumentation Engineering' %}selected{% endif %}>Instrumentation Engineering</option>
+                            <option value="Mechanical Engineering" {% if request.args.get('department') == 'Mechanical Engineering' %}selected{% endif %}>Mechanical Engineering</option>
+                            <option value="Multidisciplinary Engineering" {% if request.args.get('department') == 'Multidisciplinary Engineering' %}selected{% endif %}>Multidisciplinary Engineering</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="subject" class="form-label">Subject</label>
+                        <input type="text" class="form-control" id="subject" name="subject" value="{{ request.args.get('subject', '') }}">
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-9">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Search Results</h5>
+                <span class="text-muted">{{ notes|length }} notes found</span>
+            </div>
+            <div class="card-body">
+                {% if notes %}
+                <div class="row row-cols-1 row-cols-md-2 g-4">
+                    {% for note in notes %}
+                    <div class="col">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ note.title }}</h5>
+                                <p class="card-text text-muted">
+                                    <small>
+                                        <i class="fas fa-user"></i> {{ note.uploader.name }}<br>
+                                        <i class="fas fa-book"></i> {{ note.subject }}<br>
+                                        <i class="fas fa-graduation-cap"></i> Semester {{ note.semester }}<br>
+                                        <i class="fas fa-building"></i> {{ note.department }}
+                                    </small>
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-primary">
+                                        <i class="fas fa-eye"></i> {{ note.views_count }} views
+                                    </span>
+                                    <a href="{{ url_for('notes.view', note_id=note.id) }}" class="btn btn-outline-primary">
+                                        View Note
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                    <h5>No notes found</h5>
+                    <p class="text-muted">Try adjusting your search filters</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

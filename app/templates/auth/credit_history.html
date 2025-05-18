@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Credit History - NotesVault{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">Credit History</h4>
+                    <a href="{{ url_for('main.index') }}" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-arrow-left"></i> Back to Dashboard
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if transactions %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Type</th>
+                                    <th>Amount</th>
+                                    <th>Description</th>
+                                    <th>Related To</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for transaction in transactions %}
+                                <tr>
+                                    <td>{{ transaction.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                                    <td>
+                                        {% if transaction.transaction_type == 'upload' %}
+                                            <span class="badge bg-success">Upload</span>
+                                        {% elif transaction.transaction_type == 'view' %}
+                                            <span class="badge bg-info">View</span>
+                                        {% elif transaction.transaction_type == 'gift_sent' %}
+                                            <span class="badge bg-warning">Gift Sent</span>
+                                        {% elif transaction.transaction_type == 'gift_received' %}
+                                            <span class="badge bg-primary">Gift Received</span>
+                                        {% elif transaction.transaction_type == 'initial' %}
+                                            <span class="badge bg-secondary">Initial</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if transaction.amount > 0 %}
+                                            <span class="text-success">+{{ transaction.amount }}</span>
+                                        {% else %}
+                                            <span class="text-danger">{{ transaction.amount }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ transaction.description }}</td>
+                                    <td>
+                                        {% if transaction.note %}
+                                            <a href="{{ url_for('notes.view', note_id=transaction.note.id) }}">
+                                                {{ transaction.note.title }}
+                                            </a>
+                                        {% elif transaction.related_user %}
+                                            <a href="{{ url_for('auth.profile', user_id=transaction.related_user.id) }}">
+                                                {{ transaction.related_user.name }}
+                                            </a>
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-history fa-3x text-muted mb-3"></i>
+                        <h5>No Credit History</h5>
+                        <p class="text-muted">Your credit transactions will appear here</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}Upload Notes - NotesVault{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">Upload Notes</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Title</label>
+                        <input type="text" class="form-control" id="title" name="title" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="subject" class="form-label">Subject</label>
+                            <input type="text" class="form-control" id="subject" name="subject" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="semester" class="form-label">Semester</label>
+                            <select class="form-select" id="semester" name="semester" required>
+                                <option value="">Select Semester</option>
+                                {% for i in range(1, 9) %}
+                                <option value="{{ i }}">Semester {{ i }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="teacher" class="form-label">Teacher/Professor</label>
+                            <input type="text" class="form-control" id="teacher" name="teacher">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="department" class="form-label">Department</label>
+                            <select class="form-select" id="department" name="department" required>
+                                <option value="">Select Department</option>
+                                <option value="Chemical Engineering">Chemical Engineering</option>
+                                <option value="Computer Engineering">Computer Engineering</option>
+                                <option value="Civil Engineering">Civil Engineering</option>
+                                <option value="Computer Sciences & Engineering (AI)">Computer Sciences & Engineering (AI)</option>
+                                <option value="Computer Sciences and Engineering (AI & ML)">Computer Sciences and Engineering (AI & ML)</option>
+                                <option value="Computer Science and Engineering (Data Science)">Computer Science and Engineering (Data Science)</option>
+                                <option value="Computer Science (IoT and Cyber Security Including Blockchain Technology)">Computer Science (IoT and Cyber Security Including Blockchain Technology)</option>
+                                <option value="Computer Engineering (Software Engineering)">Computer Engineering (Software Engineering)</option>
+                                <option value="Electronics and Telecommunication Engineering">Electronics and Telecommunication Engineering</option>
+                                <option value="Engineering, Science & Humanities">Engineering, Science & Humanities</option>
+                                <option value="Information Technology">Information Technology</option>
+                                <option value="Instrumentation Engineering">Instrumentation Engineering</option>
+                                <option value="Mechanical Engineering">Mechanical Engineering</option>
+                                <option value="Multidisciplinary Engineering">Multidisciplinary Engineering</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="file" class="form-label">Note File (PDF or Image)</label>
+                        <input type="file" class="form-control" id="file" name="file" accept=".pdf,.png,.jpg,.jpeg" required>
+                        <div class="form-text">Maximum file size: 16MB. Allowed formats: PDF, PNG, JPG, JPEG</div>
+                    </div>
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> You will earn {{ config.CREDITS_PER_UPLOAD }} credits for uploading notes.
+                    </div>
+                    <button type="submit" class="btn btn-primary">Upload Notes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

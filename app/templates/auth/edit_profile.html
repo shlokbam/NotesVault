@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Profile - NotesVault{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">Edit Profile</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Full Name</label>
+                        <input type="text" class="form-control" id="name" name="name" value="{{ current_user.name }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" value="{{ current_user.email }}" disabled>
+                        <div class="form-text">Email cannot be changed.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="college" class="form-label">College/University</label>
+                        <input type="text" class="form-control" id="college" name="college" value="{{ current_user.college }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="department" class="form-label">Department</label>
+                        <select class="form-select" id="department" name="department" required>
+                            <option value="">Select Department</option>
+                            <option value="Chemical Engineering" {% if current_user.department == 'Chemical Engineering' %}selected{% endif %}>Chemical Engineering</option>
+                            <option value="Computer Engineering" {% if current_user.department == 'Computer Engineering' %}selected{% endif %}>Computer Engineering</option>
+                            <option value="Civil Engineering" {% if current_user.department == 'Civil Engineering' %}selected{% endif %}>Civil Engineering</option>
+                            <option value="Computer Sciences & Engineering (AI)" {% if current_user.department == 'Computer Sciences & Engineering (AI)' %}selected{% endif %}>Computer Sciences & Engineering (AI)</option>
+                            <option value="Computer Sciences and Engineering (AI & ML)" {% if current_user.department == 'Computer Sciences and Engineering (AI & ML)' %}selected{% endif %}>Computer Sciences and Engineering (AI & ML)</option>
+                            <option value="Computer Science and Engineering (Data Science)" {% if current_user.department == 'Computer Science and Engineering (Data Science)' %}selected{% endif %}>Computer Science and Engineering (Data Science)</option>
+                            <option value="Computer Science (IoT and Cyber Security Including Blockchain Technology)" {% if current_user.department == 'Computer Science (IoT and Cyber Security Including Blockchain Technology)' %}selected{% endif %}>Computer Science (IoT and Cyber Security Including Blockchain Technology)</option>
+                            <option value="Computer Engineering (Software Engineering)" {% if current_user.department == 'Computer Engineering (Software Engineering)' %}selected{% endif %}>Computer Engineering (Software Engineering)</option>
+                            <option value="Electronics and Telecommunication Engineering" {% if current_user.department == 'Electronics and Telecommunication Engineering' %}selected{% endif %}>Electronics and Telecommunication Engineering</option>
+                            <option value="Engineering, Science & Humanities" {% if current_user.department == 'Engineering, Science & Humanities' %}selected{% endif %}>Engineering, Science & Humanities</option>
+                            <option value="Information Technology" {% if current_user.department == 'Information Technology' %}selected{% endif %}>Information Technology</option>
+                            <option value="Instrumentation Engineering" {% if current_user.department == 'Instrumentation Engineering' %}selected{% endif %}>Instrumentation Engineering</option>
+                            <option value="Mechanical Engineering" {% if current_user.department == 'Mechanical Engineering' %}selected{% endif %}>Mechanical Engineering</option>
+                            <option value="Multidisciplinary Engineering" {% if current_user.department == 'Multidisciplinary Engineering' %}selected{% endif %}>Multidisciplinary Engineering</option>
+                        </select>
+                    </div>
+
+                    <hr>
+
+                    <h5 class="mb-3">Change Password</h5>
+                    <div class="mb-3">
+                        <label for="current_password" class="form-label">Current Password</label>
+                        <input type="password" class="form-control" id="current_password" name="current_password">
+                    </div>
+                    <div class="mb-3">
+                        <label for="new_password" class="form-label">New Password</label>
+                        <input type="password" class="form-control" id="new_password" name="new_password">
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirm_password" class="form-label">Confirm New Password</label>
+                        <input type="password" class="form-control" id="confirm_password" name="confirm_password">
+                    </div>
+                    <div class="form-text mb-3">Leave password fields empty if you don't want to change it.</div>
+
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('auth.profile') }}" class="btn btn-outline-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

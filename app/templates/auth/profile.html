@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}Profile - NotesVault{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">Profile</h4>
+                <a href="{{ url_for('auth.edit_profile') }}" class="btn btn-outline-primary btn-sm">
+                    <i class="fas fa-edit"></i> Edit Profile
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-3 text-center">
+                        <div class="avatar-placeholder mb-3">
+                            <i class="fas fa-user fa-3x text-primary"></i>
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <h5 class="mb-3">{{ current_user.name }}</h5>
+                        <p class="text-muted mb-1">
+                            <i class="fas fa-envelope"></i> {{ current_user.email }}
+                        </p>
+                        <p class="text-muted mb-1">
+                            <i class="fas fa-university"></i> {{ current_user.college }}
+                        </p>
+                        <p class="text-muted mb-1">
+                            <i class="fas fa-graduation-cap"></i> {{ current_user.department }}
+                        </p>
+                        <p class="text-muted mb-1">
+                            <i class="fas fa-coins"></i> {{ current_user.credits }} Credits
+                        </p>
+                        <p class="text-muted mb-0">
+                            <i class="fas fa-calendar"></i> Member since {{ current_user.created_at.strftime('%B %d, %Y') }}
+                        </p>
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card bg-light">
+                            <div class="card-body text-center">
+                                <h3 class="mb-0">{{ current_user.uploaded_notes.count() }}</h3>
+                                <p class="text-muted mb-0">Notes Uploaded</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card bg-light">
+                            <div class="card-body text-center">
+                                <h3 class="mb-0">{{ current_user.viewed_notes.count() }}</h3>
+                                <p class="text-muted mb-0">Notes Viewed</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if current_user.uploaded_notes.count() > 0 %}
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0">Recent Uploads</h5>
+            </div>
+            <div class="card-body">
+                <div class="list-group">
+                    {% for note in current_user.uploaded_notes.order_by(Note.upload_date.desc()).limit(5).all() %}
+                    <a href="{{ url_for('notes.view', note_id=note.id) }}" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">{{ note.title }}</h6>
+                            <small>{{ note.upload_date.strftime('%Y-%m-%d') }}</small>
+                        </div>
+                        <p class="mb-1">{{ note.description[:100] }}{% if note.description|length > 100 %}...{% endif %}</p>
+                        <small class="text-muted">{{ note.subject }} - Semester {{ note.semester }}</small>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if current_user.viewed_notes.count() > 0 %}
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0">Recently Viewed</h5>
+            </div>
+            <div class="card-body">
+                <div class="list-group">
+                    {% for view in current_user.viewed_notes.order_by(NoteView.view_date.desc()).limit(5).all() %}
+                    <a href="{{ url_for('notes.view', note_id=view.note.id) }}" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">{{ view.note.title }}</h6>
+                            <small>{{ view.view_date.strftime('%Y-%m-%d') }}</small>
+                        </div>
+                        <p class="mb-1">{{ view.note.description[:100] }}{% if view.note.description|length > 100 %}...{% endif %}</p>
+                        <small class="text-muted">{{ view.note.subject }} - Semester {{ view.note.semester }}</small>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %} 
