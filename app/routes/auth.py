@@ -227,8 +227,7 @@ def gift_credits():
         current_user.use_credits(
             credit_amount,
             'gift_sent',
-            f'Gifted credits to {recipient.name}',
-            related_user=recipient
+            f'Gifted credits to {recipient.name}'
         )
         
         recipient.add_credits(
